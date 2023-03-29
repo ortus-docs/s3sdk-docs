@@ -1,70 +1,51 @@
 # Configuration
 
-The module is configured by default with a single migration service that interact with your database, optionally using qb. Multiple migration services with different managers may also be configured. The default manager for the cfmigrations is `QBMigrationManager`, but you may use others, such as those included with the `cbmongodb` and `cbelasticsearch` modules or roll your own.
-
-The default configuration for the module settings are:
+You can configure s3sdk under moduleSettings within your config/ColdBox.cfc file.
 
 ```cfc
 moduleSettings = {
-    "cfmigrations" : {
-        "managers" : {
-            "default" : {
-                // The manager handling and executing the migration files
-                "manager" : "cfmigrations.models.QBMigrationManager",
-                // The directory containing the migration files
-                "migrationsDirectory" : "/resources/database/migrations",
-                // The directory containing any seeds, if applicable
-                "seedsDirectory" : "/resources/database/seeds",
-                // A comma-delimited list of environments which are allowed to run seeds
-                "seedEnvironments" : "development",
-                "properties" : {
-                    "defaultGrammar" : "BaseGrammar@qb"
-                }
-            }
-        }
-    }
-}
-```
-
-With this configuration, the `default` migration manager may be retrieved via WireBox at `migrationService:default`.
-
-Here is an example of a multi-manager migrations system. Each separate manager will require their own configuration properties.
-
-```cfc
-moduleSettings = {
-    "cfmigrations": {
-        "managers": {
-            "db1": {
-                "manager": "cfmigrations.models.QBMigrationManager",
-                "migrationsDirectory": "/resources/database/db1/migrations",
-                "seedsDirectory": "/resources/database/db1/seeds",
-                "properties": {
-                    "defaultGrammar": "MySQLGrammar@qb",
-                    "datasource": "db1",
-                    "useTransactions": "false",    
-                }
-            },
-            "db2": {
-                "manager": "cfmigrations.models.QBMigrationManager",
-                "migrationsDirectory": "/resources/database/db2/migrations",
-                "seedsDirectory": "/resources/database/db2/seeds",
-                "properties": {
-                    "defaultGrammar": "PostgresGrammar@qb",
-                    "datasource": "db2",
-                    "useTransactions": "true"    
-                }
-            },
-            "elasticsearch": {
-                "manager": "cbelasticearch.models.migrations.Manager",
-                "migrationsDirectory": "/resources/elasticsearch/migrations"
-            }
-        }
-    }
+	s3sdk = {
+		// Your amazon, digital ocean access key
+		accessKey = "",
+		// Tries to determine content type of file by file extension when putting files. Defaults to false.
+		autoContentType = false,
+		// Calculates MD5 hash of content automatically. Defaults to false.
+		autoMD5 = false,
+		// Your AWS/Digital Ocean Domain Mapping: defaults to amazonaws.com
+		awsDomain = "amazonaws.com",
+		// Your AWS/Digital Ocean Region: Defaults to us-east-1
+		awsregion = "us-east-1",
+		// Used to turn debugging on or off outside of logbox. Defaults to false.
+		debug = false,
+		// Default access control policy for objects and buckets. Defaults to public-read.
+		defaultACL = "public-read",
+		// The default bucket name to root the operations on.
+		defaultBucketName = "",
+		// Default caching policy for objects. Defaults to: no-store, no-cache, must-revalidate
+		defaultCacheControl = "no-store, no-cache, must-revalidate",
+		// The default delimiter for folder operations
+		defaultDelimiter = "/",
+		// Default storage class for objects that affects cost, access speed and durability. Defaults to STANDARD.
+		// AWS classes are: STANDARD,STANDARD_IA,INTELLIGENT_TIERING,ONEZONE_IA,GLACIER,DEEP_ARCHIVE
+		// Google Cloud Storage Clases: regional,multi_regional,nearline,coldline,
+		defaultStorageClass = "STANDARD",
+		// Default HTTP timeout in seconds for all requests. Defaults to 300 seconds.
+		defaultTimeOut = 300,
+		// The default encryption character set: defaults to utf-8
+		encryptionCharset = "utf-8",
+		// How many times to retry the request before failing if the response is a 500 or 503
+		retriesOnError		: 3,
+		// Your amazon, digital ocean secret key
+		secretKey = "",
+		// Service name that is part of the service's endpoint (alphanumeric). Example: "s3"
+		// Only used for the v4 signatures
+		serviceName         : "s3",
+		// The signature version to calculate, "V2" is deprecated but more compatible with other endpoints. "V4" requires Sv4Util.cfc & ESAPI on Lucee. Defaults to V4
+		signature = "V4",
+		// SSL mode or not on cfhttp calls and when generating put/get authenticated URLs: Defaults to true
+		ssl = true,
+		// Throw exceptions when s3 requests fail, else it swallows them up.
+		throwOnRequestError : true
+	}
 };
 ```
-
-With this configuration the individual migration managers would be retreived as such:
-
-* `db1` - getInstance( "migrationService:db1" )
-* `db2` - getInstance( "migrationService:db2" )
-* `elasticsearch` - getInstance( "migrationService:elasticsearch" )
