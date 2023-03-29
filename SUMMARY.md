@@ -12,7 +12,4 @@
 
 * [Installation](overview/installation.md)
 * [Configuration](overview/configuration.md)
-
-## Usage
-
-* [Page 3](usage/page-3.md)
+* [Usage](overview/usage.md)
